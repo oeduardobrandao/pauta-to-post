@@ -3,15 +3,17 @@
 # Instalador da skill "pauta-to-post" para o Claude Code.
 #
 # Uso:
-#   curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/v1/install.sh | bash
 #
 # Instalação só no projeto atual (./.claude/skills em vez de ~/.claude/skills):
-#   curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/main/install.sh | bash -s -- --project
+#   curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/v1/install.sh | bash -s -- --project
+#
+# Para instalar de outra ref (branch/tag), defina PTP_REF, ex.: PTP_REF=main
 #
 set -euo pipefail
 
 REPO="oeduardobrandao/pauta-to-post"
-BRANCH="main"
+REF="${PTP_REF:-v1}"
 SKILL="pauta-to-post"
 
 SCOPE="personal"
@@ -41,9 +43,10 @@ echo "==> Instalando a skill '$SKILL' em: $DEST"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-# Baixa o repositório como tarball e usa SÓ a subpasta da skill, garantindo o
-# caminho final $DEST/SKILL.md (sem aninhar um nível a mais).
-URL="https://github.com/$REPO/archive/refs/heads/$BRANCH.tar.gz"
+# Baixa o repositório como tarball (na ref fixada) e usa SÓ a subpasta da skill,
+# garantindo o caminho final $DEST/SKILL.md (sem aninhar um nível a mais).
+URL="https://github.com/$REPO/archive/$REF.tar.gz"
+echo "==> Baixando a skill (ref: $REF)"
 if command -v curl >/dev/null 2>&1; then
   curl -fsSL "$URL" -o "$TMP/repo.tar.gz"
 elif command -v wget >/dev/null 2>&1; then
@@ -53,10 +56,13 @@ else
   exit 1
 fi
 
-tar -xzf "$TMP/repo.tar.gz" -C "$TMP"
+mkdir -p "$TMP/extract"
+tar -xzf "$TMP/repo.tar.gz" -C "$TMP/extract"
 
-# A subpasta da skill dentro do tarball extraído (ex.: pauta-to-post-main/pauta-to-post/)
-SRC="$TMP/${REPO#*/}-$BRANCH/$SKILL"
+# O tarball extrai numa única pasta de topo cujo nome varia conforme a ref
+# (ex.: pauta-to-post-main, pauta-to-post-1.0.0); descobrimos dinamicamente.
+EXTRACTED="$(find "$TMP/extract" -mindepth 1 -maxdepth 1 -type d | head -n1)"
+SRC="$EXTRACTED/$SKILL"
 if [ ! -f "$SRC/SKILL.md" ]; then
   echo "Erro: SKILL.md não encontrado no pacote baixado ($SRC)." >&2
   exit 1

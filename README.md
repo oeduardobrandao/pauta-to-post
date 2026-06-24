@@ -76,13 +76,13 @@ errado. Os comandos abaixo já tratam isso.
 ### Opção 1 — one-liner (recomendada)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/v1/install.sh | bash
 ```
 
 Para instalar só no projeto atual (em `./.claude/skills`), acrescente `--project`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/main/install.sh | bash -s -- --project
+curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/v1/install.sh | bash -s -- --project
 ```
 
 O script baixa a skill do GitHub e a coloca em `~/.claude/skills/pauta-to-post/` (ou
