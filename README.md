@@ -59,8 +59,40 @@ examples/                         # exemplos gerados (Crícia)
 
 ## Instalação
 
-Use o pacote `dist/pauta-to-post.skill`, ou aponte para a pasta `pauta-to-post/` no diretório
-de skills do seu ambiente.
+O Claude Code procura skills em dois lugares (cada skill é uma pasta com um `SKILL.md` dentro):
+
+| Escopo   | Caminho                                   | Vale para        |
+| -------- | ----------------------------------------- | ---------------- |
+| Pessoal  | `~/.claude/skills/<skill>/SKILL.md`       | Todos os projetos |
+| Projeto  | `.claude/skills/<skill>/SKILL.md`         | Só aquele projeto |
+
+O destino final precisa ser exatamente `~/.claude/skills/pauta-to-post/SKILL.md` — **sem aninhar
+um nível a mais** (nada de `~/.claude/skills/pauta-to-post/pauta-to-post/SKILL.md`). Atenção: a
+raiz deste repositório contém uma subpasta `pauta-to-post/` que é a skill em si, então um
+`git clone` "cru" para dentro de `~/.claude/skills/pauta-to-post` cairia justamente no aninhamento
+errado. Os comandos abaixo já tratam isso.
+
+### Opção 1 — clonar do GitHub (instalação pessoal)
+
+```bash
+git clone https://github.com/oeduardobrandao/pauta-to-post.git /tmp/pauta-to-post && \
+  mkdir -p ~/.claude/skills && \
+  cp -R /tmp/pauta-to-post/pauta-to-post ~/.claude/skills/ && \
+  rm -rf /tmp/pauta-to-post
+```
+
+### Opção 2 — extrair o pacote `dist/pauta-to-post.skill` (a partir da raiz do repo)
+
+O `.skill` é um zip cujo nível de topo já é `pauta-to-post/`, então basta extrair direto na pasta
+de skills:
+
+```bash
+mkdir -p ~/.claude/skills && unzip -o dist/pauta-to-post.skill -d ~/.claude/skills/
+```
+
+As duas opções resultam em `~/.claude/skills/pauta-to-post/SKILL.md`. Para instalar só num projeto,
+troque `~/.claude/skills` por `.claude/skills` na raiz do projeto. Depois é só rodar
+`/pauta-to-post` no Claude Code.
 
 ## Exemplos
 
