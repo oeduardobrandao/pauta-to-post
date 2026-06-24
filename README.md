@@ -49,6 +49,7 @@ pauta-to-post/
     └── adaptar-link.md           # sub-skill: refazer post de link/prints para um cliente
 dist/
 └── pauta-to-post.skill           # pacote instalável
+install.sh                        # instalador one-liner (curl … | bash)
 examples/                         # exemplos gerados (Crícia)
 ```
 
@@ -72,7 +73,22 @@ raiz deste repositório contém uma subpasta `pauta-to-post/` que é a skill em 
 `git clone` "cru" para dentro de `~/.claude/skills/pauta-to-post` cairia justamente no aninhamento
 errado. Os comandos abaixo já tratam isso.
 
-### Opção 1 — clonar do GitHub (instalação pessoal)
+### Opção 1 — one-liner (recomendada)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/main/install.sh | bash
+```
+
+Para instalar só no projeto atual (em `./.claude/skills`), acrescente `--project`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/oeduardobrandao/pauta-to-post/main/install.sh | bash -s -- --project
+```
+
+O script baixa a skill do GitHub e a coloca em `~/.claude/skills/pauta-to-post/` (ou
+`./.claude/skills/pauta-to-post/` com `--project`). Rodar de novo atualiza a skill.
+
+### Opção 2 — clonar do GitHub manualmente
 
 ```bash
 git clone https://github.com/oeduardobrandao/pauta-to-post.git /tmp/pauta-to-post && \
@@ -81,7 +97,7 @@ git clone https://github.com/oeduardobrandao/pauta-to-post.git /tmp/pauta-to-pos
   rm -rf /tmp/pauta-to-post
 ```
 
-### Opção 2 — extrair o pacote `dist/pauta-to-post.skill` (a partir da raiz do repo)
+### Opção 3 — extrair o pacote `dist/pauta-to-post.skill` (a partir da raiz do repo)
 
 O `.skill` é um zip cujo nível de topo já é `pauta-to-post/`, então basta extrair direto na pasta
 de skills:
@@ -90,7 +106,7 @@ de skills:
 mkdir -p ~/.claude/skills && unzip -o dist/pauta-to-post.skill -d ~/.claude/skills/
 ```
 
-As duas opções resultam em `~/.claude/skills/pauta-to-post/SKILL.md`. Para instalar só num projeto,
+As três opções resultam em `~/.claude/skills/pauta-to-post/SKILL.md`. Para instalar só num projeto,
 troque `~/.claude/skills` por `.claude/skills` na raiz do projeto. Depois é só rodar
 `/pauta-to-post` no Claude Code.
 
